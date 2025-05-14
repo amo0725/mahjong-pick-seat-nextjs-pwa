@@ -36,7 +36,7 @@ export default function HomePage() {
   const [resultMessage, setResultMessage] = useState<string>('');
   const [isClient, setIsClient] = useState(false); // To prevent SSR issues with localStorage & audio
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const { theme, setTheme, resolvedTheme } = useTheme(); // Get theme states
+  const { setTheme, resolvedTheme } = useTheme(); // Get theme states
   const [animationTriggerKey, setAnimationTriggerKey] = useState<number>(0); // State for animation trigger
 
   useEffect(() => {
