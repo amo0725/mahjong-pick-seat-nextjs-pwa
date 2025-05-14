@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image'; // Added import for Next.js Image component
 import { useTheme } from 'next-themes'; // Import useTheme
 import { FiSun, FiMoon } from 'react-icons/fi'; // Using react-icons for theme toggle icon
 
@@ -137,7 +138,13 @@ export default function HomePage() {
     <div className='min-h-screen flex flex-col items-center justify-between p-4 sm:p-8 font-sans transition-colors duration-300'>
       <header className='w-full flex justify-between items-center mb-8'>
         <h1 className='text-3xl sm:text-4xl font-bold text-theme-light-text dark:text-theme-dark-text tracking-tight flex items-center'>
-          <span className='mr-3'>🀄</span>
+          <Image
+            src='/icons/favicon-48x48.png'
+            alt='麻將 Logo'
+            width={40}
+            height={40}
+            className='mr-3 rounded-md'
+          />
           <span>麻將選位神器</span>
         </h1>
         <button
