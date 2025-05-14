@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>離線中 - 麻將選位神器</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f4f7fa; /* Corresponds to theme-light-bg */
+        color: #1f2d3d; /* Corresponds to theme-light-text */
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      .container {
+        max-width: 400px;
+      }
+      h1 {
+        font-size: 1.8em;
+        margin-bottom: 0.5em;
+      }
+      p {
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin-bottom: 1em;
+      }
+      small {
+        font-size: 0.9em;
+        color: #555;
+      }
+      /* Basic dark mode support for the offline page itself if OS is in dark mode */
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: #1e1e2f; /* Updated to match design guide */
+          color: #ededed; /* Corresponds to theme-dark-text */
+        }
+        small {
+          color: #aaa;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>哎呀！您目前離線了</h1>
+      <p>麻將選位神器需要網路連線才能正常運作或載入最新內容。</p>
+      <p>請檢查您的網路設定，然後再試一次。</p>
+      <small>當您恢復連線後，應用程式將會自動更新。</small>
+    </div>
+  </body>
+</html>
