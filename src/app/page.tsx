@@ -1,47 +1,48 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import Image from 'next/image'; // Added import for Next.js Image component
-import { useTheme } from 'next-themes'; // Import useTheme
-import { FiSun, FiMoon } from 'react-icons/fi'; // Using react-icons for theme toggle icon
+import Image from 'next/image'; // Keep for other images if any, or remove if only SVG icons are used for tiles
+import { useTheme } from 'next-themes';
+import { FiSun, FiMoon } from 'react-icons/fi';
+
+// Import your new SVG Icon components
+import EastIcon from '@/components/MahjongTile/EastIcon';
+import SouthIcon from '@/components/MahjongTile/SouthIcon';
+import WestIcon from '@/components/MahjongTile/WestIcon';
+import NorthIcon from '@/components/MahjongTile/NorthIcon';
 
 type Card = '東' | '南' | '西' | '北';
-type TileVariant = 'east' | 'south' | 'west' | 'north'; // For MahjongTile component
+type TileVariant = 'east' | 'south' | 'west' | 'north';
 interface DrawnCardInfo {
   card: Card;
-  id: number; // For unique key in map
+  id: number;
   tileName: TileVariant;
 }
 
 const ALL_CARDS: Card[] = ['東', '南', '西', '北'];
 
-const getUnicodeMahjongChar = (tileName: TileVariant): string => {
-  switch (tileName) {
-    case 'east':
-      return '🀀'; // U+1F000
-    case 'south':
-      return '🀁'; // U+1F001
-    case 'west':
-      return '🀂'; // U+1F002
-    case 'north':
-      return '🀃'; // U+1F003
-    default:
-      return '?'; // Should not happen
-  }
+// Map TileVariant to the corresponding Icon Component
+const MahjongTileComponents: Record<
+  TileVariant,
+  React.FC<React.SVGProps<SVGSVGElement>>
+> = {
+  east: EastIcon,
+  south: SouthIcon,
+  west: WestIcon,
+  north: NorthIcon,
 };
 
 export default function HomePage() {
   const [drawnCards, setDrawnCards] = useState<DrawnCardInfo[]>([]);
   const [currentCard, setCurrentCard] = useState<DrawnCardInfo | null>(null);
   const [resultMessage, setResultMessage] = useState<string>('');
-  const [isClient, setIsClient] = useState(false); // To prevent SSR issues with localStorage & audio
+  const [isClient, setIsClient] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const { setTheme, resolvedTheme } = useTheme(); // Get theme states
-  const [animationTriggerKey, setAnimationTriggerKey] = useState<number>(0); // State for animation trigger
+  const { setTheme, resolvedTheme } = useTheme();
+  const [animationTriggerKey, setAnimationTriggerKey] = useState<number>(0);
 
   useEffect(() => {
-    setIsClient(true); // Component has mounted
-    // Load history from localStorage
+    setIsClient(true);
     const storedCards = localStorage.getItem('drawnCardsHistory');
     if (storedCards) {
       const parsedCards: DrawnCardInfo[] = JSON.parse(storedCards);
@@ -73,19 +74,16 @@ export default function HomePage() {
       case '北':
         return 'north';
       default:
-        throw new Error('Invalid card'); // Should not happen
+        throw new Error('Invalid card');
     }
   };
 
   const handleDrawCard = () => {
-    if (typeof navigator.vibrate === 'function') {
-      navigator.vibrate(10); // 10ms vibration
-    }
+    if (typeof navigator.vibrate === 'function') navigator.vibrate(10);
     if (drawnCards.length >= ALL_CARDS.length) {
       setResultMessage('所有牌已經抽完！');
       return;
     }
-
     const availableCards = ALL_CARDS.filter(
       (card) => !drawnCards.some((dc) => dc.card === card)
     );
@@ -93,32 +91,27 @@ export default function HomePage() {
     const newCard = availableCards[randomIndex];
     const newCardInfo: DrawnCardInfo = {
       card: newCard,
-      id: Date.now(), // Simple unique id
+      id: Date.now(),
       tileName: translateCardToTileName(newCard),
     };
-
     const updatedDrawnCards = [...drawnCards, newCardInfo];
     setDrawnCards(updatedDrawnCards);
     setCurrentCard(newCardInfo);
     setResultMessage(`抽到的牌是: ${newCard}`);
     saveHistory(updatedDrawnCards);
-    setAnimationTriggerKey((prevKey) => prevKey + 1); // Increment key to trigger animation
-
+    setAnimationTriggerKey((prevKey) => prevKey + 1);
     if (audioRef.current) {
       audioRef.current
         .play()
         .catch((error) => console.error('音效播放失敗:', error));
     }
-
     if (updatedDrawnCards.length >= ALL_CARDS.length) {
       setResultMessage('所有牌已經抽完！');
     }
   };
 
   const handleResetGame = () => {
-    if (typeof navigator.vibrate === 'function') {
-      navigator.vibrate(10);
-    }
+    if (typeof navigator.vibrate === 'function') navigator.vibrate(10);
     setDrawnCards([]);
     setCurrentCard(null);
     setResultMessage('');
@@ -129,10 +122,11 @@ export default function HomePage() {
     setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
   };
 
-  if (!isClient) {
-    // Avoid rendering client-specific parts on server or during hydration mismatch
-    return null;
-  }
+  if (!isClient) return null;
+
+  const CurrentTileIcon = currentCard
+    ? MahjongTileComponents[currentCard.tileName]
+    : null;
 
   return (
     <div className='min-h-screen flex flex-col items-center justify-between p-4 sm:p-8 font-sans transition-colors duration-300'>
@@ -161,18 +155,16 @@ export default function HomePage() {
       </header>
 
       <main className='flex flex-col items-center w-full max-w-md flex-grow'>
-        {currentCard ? (
+        {currentCard && CurrentTileIcon ? (
           <div
             key={animationTriggerKey}
             id='current-card'
-            className='my-6 p-4 sm:p-6 rounded-lg shadow-xl transform transition-all duration-500 ease-out hover:scale-105 bg-white/80 dark:bg-slate-700 animate-card-flip flex justify-center items-center'
+            className='my-6 p-2 rounded-lg shadow-xl transform transition-all duration-500 ease-out hover:scale-105 bg-white/80 dark:bg-slate-700 animate-card-flip flex justify-center items-center'
           >
-            <span className='text-[160px] sm:text-[200px] md:text-[240px] leading-none text-theme-light-text dark:text-theme-dark-text'>
-              {getUnicodeMahjongChar(currentCard.tileName)}
-            </span>
+            <CurrentTileIcon className='w-32 h-40 sm:w-36 sm:h-48 md:w-40 md:h-52 text-theme-light-text dark:text-theme-dark-text' />
           </div>
         ) : (
-          <div className='my-6 w-48 h-[calc(1.5*12rem)] sm:w-60 md:w-72 flex items-center justify-center bg-slate-200 dark:bg-slate-700 rounded-lg shadow-inner text-slate-400 dark:text-slate-500'>
+          <div className='my-6 w-32 h-40 sm:w-36 sm:h-48 md:w-40 md:h-52 flex items-center justify-center bg-slate-200 dark:bg-slate-700 rounded-lg shadow-inner text-slate-400 dark:text-slate-500'>
             <p>請抽牌</p>
           </div>
         )}
@@ -218,31 +210,34 @@ export default function HomePage() {
             抽牌紀錄
           </h3>
           <div className='flex flex-wrap justify-center gap-3 sm:gap-4'>
-            {drawnCards.map((drawnCardInfo, index) => (
-              <div
-                key={drawnCardInfo.id}
-                className={`history-item flex flex-col items-center p-2 rounded-md bg-white dark:bg-slate-700 shadow opacity-0 animate-fadeIn transform hover:scale-110 transition-all duration-200 ${
-                  currentCard && drawnCardInfo.id === currentCard.id
-                    ? 'highlight-current-history-item'
-                    : ''
-                }`}
-                style={{ animationDelay: `${index * 0.05}s` }}
-              >
-                <span className='text-3xl sm:text-4xl text-theme-light-text dark:text-theme-dark-text'>
-                  {getUnicodeMahjongChar(drawnCardInfo.tileName)}
-                </span>
-                <span className='mt-1.5 text-sm font-medium text-theme-light-text opacity-75 dark:text-theme-dark-text dark:opacity-75'>
-                  #{index + 1}
-                </span>
-              </div>
-            ))}
+            {drawnCards.map((drawnCardInfo, index) => {
+              const HistoryTileIcon =
+                MahjongTileComponents[drawnCardInfo.tileName];
+              return (
+                <div
+                  key={drawnCardInfo.id}
+                  className={`history-item flex flex-col items-center p-1 rounded-md bg-white dark:bg-slate-700 shadow opacity-0 animate-fadeIn transform hover:scale-110 transition-all duration-200 ${
+                    currentCard && drawnCardInfo.id === currentCard.id
+                      ? 'highlight-current-history-item'
+                      : ''
+                  }`}
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                  {HistoryTileIcon && (
+                    <HistoryTileIcon className='w-9 h-12 text-theme-light-text dark:text-theme-dark-text' />
+                  )}
+                  <span className='mt-1 text-xs font-medium text-theme-light-text opacity-75 dark:text-theme-dark-text dark:opacity-75'>
+                    #{index + 1}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </footer>
       )}
 
       <audio ref={audioRef} src='/sounds/draw-sound.mp3' preload='auto' />
 
-      {/* CSS for fadeIn animation - consider moving to globals.css if used elsewhere */}
       <style jsx global>{`
         @keyframes fadeIn {
           to {
@@ -252,10 +247,9 @@ export default function HomePage() {
         }
         .animate-fadeIn {
           opacity: 0;
-          transform: translateY(10px); /* Start slightly lower */
+          transform: translateY(10px);
           animation: fadeIn 0.4s ease-out forwards;
         }
-
         @keyframes cardFlipAnimation {
           0% {
             transform: rotateY(-180deg) scale(0.8);
@@ -268,13 +262,11 @@ export default function HomePage() {
             filter: brightness(1);
           }
           90% {
-            /* Start flash */
             transform: rotateY(0) scale(1);
             opacity: 1;
-            filter: brightness(1.5); /* Increased brightness for flash */
+            filter: brightness(1.5);
           }
           100% {
-            /* End flash, return to normal brightness */
             transform: rotateY(0) scale(1);
             opacity: 1;
             filter: brightness(1);
@@ -283,7 +275,6 @@ export default function HomePage() {
         .animate-card-flip {
           animation: cardFlipAnimation 0.6s ease-out forwards;
         }
-
         .highlight-current-history-item {
           border: 2px solid var(--color-theme-light-main);
           box-shadow: 0 0 8px var(--color-theme-light-main);
