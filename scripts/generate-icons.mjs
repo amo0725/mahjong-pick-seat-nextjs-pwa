@@ -40,7 +40,7 @@ async function generateAndPlaceIcons() {
       pixel_art: false,
       icons: {
         android: true, // Trying with purpose directly
-        appleIcon: { offset: 10 }, // Create Apple touch icons with offset
+        appleIcon: true, // Create Apple touch icons with offset
         appleStartup: false, // No need for startup images for now
         favicons: true, // Create regular favicons (favicon.ico, favicon-16x16.png, favicon-32x32.png)
         windows: false, // No Windows Metro tiles for now
