@@ -1,11 +1,10 @@
 // components/ShaaIcon.tsx
 import React from 'react';
 
-interface WestIconProps extends React.SVGProps<SVGSVGElement> {
-  // 你可以添加額外的 props 如果需要
-}
-
-const WestIcon: React.FC<WestIconProps> = ({ className, ...props }) => {
+const WestIcon: React.FC<React.SVGProps<SVGSVGElement>> = ({
+  className,
+  ...props
+}) => {
   return (
     <svg
       viewBox='0 0 300 400'

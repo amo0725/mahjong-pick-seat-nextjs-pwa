@@ -5,7 +5,7 @@ import Image from 'next/image'; // Keep for other images if any, or remove if on
 import { useTheme } from 'next-themes';
 import { FiSun, FiMoon } from 'react-icons/fi';
 
-// Import your new SVG Icon components
+// Import your new SVG Icon components from the new path
 import EastIcon from '@/components/MahjongTile/EastIcon';
 import SouthIcon from '@/components/MahjongTile/SouthIcon';
 import WestIcon from '@/components/MahjongTile/WestIcon';

@@ -1,11 +1,10 @@
 // components/PeiIcon.tsx
 import React from 'react';
 
-interface NorthIconProps extends React.SVGProps<SVGSVGElement> {
-  // 你可以添加額外的 props 如果需要
-}
-
-const NorthIcon: React.FC<NorthIconProps> = ({ className, ...props }) => {
+const NorthIcon: React.FC<React.SVGProps<SVGSVGElement>> = ({
+  className,
+  ...props
+}) => {
   return (
     <svg
       viewBox='0 0 300 400'

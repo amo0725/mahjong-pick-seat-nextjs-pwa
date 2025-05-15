@@ -1,11 +1,10 @@
 // components/NanIcon.tsx
 import React from 'react';
 
-interface SouthIconProps extends React.SVGProps<SVGSVGElement> {
-  // 你可以添加額外的 props 如果需要
-}
-
-const SouthIcon: React.FC<SouthIconProps> = ({ className, ...props }) => {
+const SouthIcon: React.FC<React.SVGProps<SVGSVGElement>> = ({
+  className,
+  ...props
+}) => {
   return (
     <svg
       viewBox='0 0 300 400'

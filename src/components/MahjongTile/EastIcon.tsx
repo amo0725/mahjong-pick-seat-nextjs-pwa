@@ -1,12 +1,10 @@
 // components/TonIcon.tsx
 import React from 'react';
 
-interface EastIconProps extends React.SVGProps<SVGSVGElement> {
-  // 你可以添加額外的 props 如果需要
-  // 例如： primaryColor?: string;
-}
-
-const EastIcon: React.FC<EastIconProps> = ({ className, ...props }) => {
+const EastIcon: React.FC<React.SVGProps<SVGSVGElement>> = ({
+  className,
+  ...props
+}) => {
   return (
     <svg
       viewBox='0 0 300 400'
